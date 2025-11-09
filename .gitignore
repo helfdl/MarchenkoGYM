@@ -9,9 +9,6 @@ yarn-error.log*
 .env.test.local
 .env.production.local
 
-logs/
-*.log
-
 pids/
 *.pid
 *.seed
