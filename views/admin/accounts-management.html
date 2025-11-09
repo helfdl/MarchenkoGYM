@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Управление учетными записями</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="/admin" class="navbar-brand">СИЛА</a>
+            <ul class="navbar-nav">
+                <li class="nav-item"><a href="/admin" class="nav-link">Главная</a></li>
+                <li class="nav-item"><a href="/admin/accounts-management" class="nav-link">Учетные записи</a></li>
+                <li class="nav-item"><a href="/admin/trainer-management" class="nav-link">Тренеры</a></li>
+                <li class="nav-item"><a href="/admin/clients-management" class="nav-link">Клиенты</a></li>
+                <li class="nav-item"><a href="/admin/subscriptions" class="nav-link">Абонементы</a></li>
+                <li class="nav-item"><a href="/admin/schedule" class="nav-link">Расписание</a></li>
+                <li class="nav-item"><a href="/admin/reports" class="nav-link">Отчеты</a></li>
+            </ul>
+            <div class="nav-buttons">
+                <span class="user-info" id="userInfo"></span>
+                <button class="btn btn-secondary" onclick="AuthService.logout()">Выйти</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-content">
+        <div class="container">
+            <h1>Управление учетными записями</h1>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2>Все учетные записи</h2>
+                    <div class="header-actions">
+                        <input type="text" id="accountsSearch" class="form-control" placeholder="Поиск по имени, email или телефону..." style="width: 300px;">
+                        <select id="roleFilter" class="form-control" style="width: 200px; margin-left: 10px;">
+                            <option value="all">Все роли</option>
+                            <option value="client">Клиенты</option>
+                            <option value="trainer">Тренеры</option>
+                            <option value="admin">Администраторы</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="accountsList">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="accountModal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close" onclick="AccountsManagement.closeAccountModal()">&times;</span>
+            <h2 class="text-center">Редактировать учетную запись</h2>
+
+            <form id="accountForm">
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="accountFirstName" class="form-label">Имя</label>
+                            <input type="text" id="accountFirstName" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="accountLastName" class="form-label">Фамилия</label>
+                            <input type="text" id="accountLastName" class="form-control" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="accountEmail" class="form-label">Email</label>
+                    <input type="email" id="accountEmail" class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="accountPhone" class="form-label">Телефон</label>
+                    <input type="tel" id="accountPhone" class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="accountRole" class="form-label">Роль</label>
+                    <select id="accountRole" class="form-control" required>
+                        <option value="">Выберите роль</option>
+                        <option value="client">Клиент</option>
+                        <option value="trainer">Тренер</option>
+                        <option value="admin">Администратор</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="accountPassword" class="form-label">Новый пароль (оставьте пустым, если не меняете)</label>
+                    <input type="password" id="accountPassword" class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label for="accountIsActive" class="form-label">
+                        <input type="checkbox" id="accountIsActive"> Активна
+                    </label>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Сохранить</button>
+            </form>
+
+            <div id="accountMessage" class="message hidden"></div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Контакты</h3>
+                    <div class="footer-contact">
+                        <p>г. Минск, ул. Платонова, 39</p>
+                        <p>+375 29 850-25-29</p>
+                        <p>sila@gym.by</p>
+                        <p>6:00 - 24:00 (без выходных)</p>
+                        <p>Станция метро "Якуба Колоса"</p>
+                    </div>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Мы на карте</h3>
+                    <div class="footer-map">
+                        <iframe 
+                            src="https://yandex.ru/map-widget/v1/?ll=27.595145%2C53.911368&z=17&pt=27.595145,53.911368,comma" 
+                            width="100%" 
+                            height="100%" 
+                            frameborder="0" 
+                            style="border:0;"
+                            allowfullscreen="true">
+                        </iframe>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2025 Тренажерный зал «Сила»</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/js/guest/auth.js"></script>
+    <script src="/js/admin/accountsManagement.js"></script>
+</body>
+
+</html>
+
