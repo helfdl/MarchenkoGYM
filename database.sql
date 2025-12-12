@@ -51,11 +51,8 @@ CREATE TABLE subscriptions (
 CREATE TABLE trainer_programs (
     program_id INT AUTO_INCREMENT PRIMARY KEY,
     trainer_id INT NOT NULL,
-    name VARCHAR(255) NOT NULL,
-    description TEXT,
-    price_per_session DECIMAL(10,2),
     duration_minutes INT DEFAULT 60,
-    is_active BOOLEAN DEFAULT TRUE,
+    exercises JSON NULL,
     FOREIGN KEY (trainer_id) REFERENCES users(user_id)
 );
 
@@ -63,6 +60,7 @@ CREATE TABLE schedule (
     schedule_id INT AUTO_INCREMENT PRIMARY KEY,
     trainer_id INT NOT NULL,
     program_id INT NULL,
+    name VARCHAR(255) NULL,
     session_type ENUM('individual', 'group') NOT NULL,
     session_date DATE NOT NULL,
     start_time TIME NOT NULL,
@@ -91,11 +89,11 @@ CREATE TABLE attendance (
     schedule_id INT NOT NULL,
     attendance_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     marked_by_trainer_id INT NULL,
-    notes TEXT,
     FOREIGN KEY (user_id) REFERENCES users(user_id),
     FOREIGN KEY (schedule_id) REFERENCES schedule(schedule_id),
     FOREIGN KEY (marked_by_trainer_id) REFERENCES users(user_id)
 );
+
 
 -- пароль admin
 INSERT INTO users (email, password_hash, first_name, last_name, phone, role) VALUES
@@ -107,15 +105,28 @@ INSERT INTO users (email, password_hash, first_name, last_name, phone, role) VAL
 ('masha@gym.com', '$2a$10$53IPG6JrmESQZXpzWv8TCu4McExdHgtO58nE16Sq3WLxVnurlsA9m', 'Мария', 'Марченко', '+375339003891', 'trainer'),
 ('artem@gym.com', '$2a$10$53IPG6JrmESQZXpzWv8TCu4McExdHgtO58nE16Sq3WLxVnurlsA9m', 'Артем', 'Свидерский', '+375295312416', 'trainer');
 
+-- пароль client
+INSERT INTO users (email, password_hash, first_name, last_name, phone, role) VALUES
+('matvei@gmail.com', '$2a$10$gR.zz0/ZzekMQrC93da31uTet1TTrE7v4/GIbUARGCJzuxzpD4eLa', 'Матвей', 'Коржовник', '+375298764523', 'client'),
+('lera@gmail.com', '$2a$10$gR.zz0/ZzekMQrC93da31uTet1TTrE7v4/GIbUARGCJzuxzpD4eLa', 'Валерия', 'Леутко', '+375298007932', 'client'),
+('alex@gmail.com', '$2a$10$gR.zz0/ZzekMQrC93da31uTet1TTrE7v4/GIbUARGCJzuxzpD4eLa', 'Александр', 'Петров', '+375291234567', 'client'),
+('olga@gmail.com', '$2a$10$gR.zz0/ZzekMQrC93da31uTet1TTrE7v4/GIbUARGCJzuxzpD4eLa', 'Ольга', 'Сидорова', '+375292345678', 'client'),
+('dmitry@gmail.com', '$2a$10$gR.zz0/ZzekMQrC93da31uTet1TTrE7v4/GIbUARGCJzuxzpD4eLa', 'Дмитрий', 'Иванов', '+375293456789', 'client'),
+('ekaterina@gmail.com', '$2a$10$gR.zz0/ZzekMQrC93da31uTet1TTrE7v4/GIbUARGCJzuxzpD4eLa', 'Екатерина', 'Козлова', '+375294567890', 'client'),
+('sergey@gmail.com', '$2a$10$gR.zz0/ZzekMQrC93da31uTet1TTrE7v4/GIbUARGCJzuxzpD4eLa', 'Сергей', 'Новиков', '+375295678901', 'client'),
+('anna@gmail.com', '$2a$10$gR.zz0/ZzekMQrC93da31uTet1TTrE7v4/GIbUARGCJzuxzpD4eLa', 'Анна', 'Морозова', '+375296789012', 'client'),
+('maxim@gmail.com', '$2a$10$gR.zz0/ZzekMQrC93da31uTet1TTrE7v4/GIbUARGCJzuxzpD4eLa', 'Максим', 'Павлов', '+375297890123', 'client'),
+('irina@gmail.com', '$2a$10$gR.zz0/ZzekMQrC93da31uTet1TTrE7v4/GIbUARGCJzuxzpD4eLa', 'Ирина', 'Федорова', '+375298901234', 'client'),
+('vladimir@gmail.com', '$2a$10$gR.zz0/ZzekMQrC93da31uTet1TTrE7v4/GIbUARGCJzuxzpD4eLa', 'Владимир', 'Семенов', '+375299012345', 'client'),
+('natalia@gmail.com', '$2a$10$gR.zz0/ZzekMQrC93da31uTet1TTrE7v4/GIbUARGCJzuxzpD4eLa', 'Наталья', 'Лебедева', '+375291123456', 'client'),
+('andrey@gmail.com', '$2a$10$gR.zz0/ZzekMQrC93da31uTet1TTrE7v4/GIbUARGCJzuxzpD4eLa', 'Андрей', 'Егоров', '+375292234567', 'client'),
+('tatyana@gmail.com', '$2a$10$gR.zz0/ZzekMQrC93da31uTet1TTrE7v4/GIbUARGCJzuxzpD4eLa', 'Татьяна', 'Ковалева', '+375293345678', 'client'),
+('pavel@gmail.com', '$2a$10$gR.zz0/ZzekMQrC93da31uTet1TTrE7v4/GIbUARGCJzuxzpD4eLa', 'Павел', 'Орлов', '+375294456789', 'client');
+
 INSERT INTO trainer_profiles (trainer_id, specialty, experience_years, bio) VALUES
 (2, 'Силовой тренинг', 5, 'Помогаю развивать силу с индивидуальным подходом.'),
 (3, 'Йога', 7, 'Сертифицированный инструктор по йоге.'),
 (4, 'Кардио', 4, 'Создаю интенсивные программы для развития выносливости.');
-
--- пароль client
-INSERT INTO users (email, password_hash, first_name, last_name, phone, role) VALUES
-('matvei@gmail.com', '$2a$10$gR.zz0/ZzekMQrC93da31uTet1TTrE7v4/GIbUARGCJzuxzpD4eLa', 'Матвей', 'Коржовник', '+375298764523', 'client'),
-('lera@gmail.com', '$2a$10$gR.zz0/ZzekMQrC93da31uTet1TTrE7v4/GIbUARGCJzuxzpD4eLa', 'Валерия', 'Леутко', '+375298007932', 'client');
 
 INSERT INTO subscription_types (name, category, duration_months, visits_count, base_price, final_price, description) VALUES
 ('Безлимитный тренажерный (1 месяц)', 'gym', 1, NULL, 80.00, 80.00, 'Неограниченное посещение тренажерного зала на 1 месяц'),
@@ -143,62 +154,112 @@ INSERT INTO subscription_types (name, category, duration_months, visits_count, b
 ('Безлимит общий (6 месяцев)', 'combined', 6, NULL, 750.00, 750.00, 'Неограниченное посещение тренажерного зала и групповых тренировок на 6 месяцев'),
 ('Безлимит общий (12 месяцев)', 'combined', 12, NULL, 1400.00, 1400.00, 'Неограниченное посещение тренажерного зала и групповых тренировок на 12 месяцев');
 
-INSERT INTO trainer_programs (trainer_id, name, description, price_per_session, duration_minutes) VALUES
-(2, 'Силовая тренировка', 'Интенсивная силовая тренировка для развития мышечной массы', 25.00, 60),
-(2, 'Функциональный тренинг', 'Упражнения для развития выносливости и функциональной силы', 20.00, 45),
-(3, 'Йога для начинающих', 'Базовые асаны и дыхательные практики', 30.00, 60),
-(3, 'Продвинутая йога', 'Сложные асаны и медитативные практики', 35.00, 75),
-(4, 'Кардио-интервалы', 'Высокоинтенсивные интервальные тренировки', 22.00, 50),
-(4, 'Кроссфит', 'Комплексные функциональные движения', 28.00, 60);
+INSERT INTO trainer_programs (trainer_id, duration_minutes) VALUES
+(2, 60),
+(2, 45),
+(3, 60),
+(3, 75),
+(4, 50),
+(4, 60);
 
-INSERT INTO schedule (trainer_id, program_id, session_type, session_date, start_time, end_time, max_participants) VALUES
-(2, 1, 'individual', '2025-11-10', '09:00:00', '10:00:00', 1),
-(3, 3, 'group', '2025-11-10', '10:00:00', '11:00:00', 15),
-(4, 5, 'individual', '2025-11-10', '14:00:00', '14:50:00', 1),
-(2, 2, 'group', '2025-11-10', '16:00:00', '16:45:00', 8),
-(3, 4, 'individual', '2025-11-10', '18:00:00', '19:15:00', 1),
+INSERT INTO schedule (trainer_id, program_id, name, session_type, session_date, start_time, end_time, max_participants) VALUES
+(2, 1, 'Силовая тренировка', 'individual', '2025-11-30', '09:00:00', '10:00:00', 1),
+(3, 3, 'Утренняя йога', 'group', '2025-11-30', '10:00:00', '11:00:00', 15),
+(4, 5, 'Кардио-интервалы', 'group', '2025-11-30', '12:00:00', '12:50:00', 12),
+(2, 2, 'Функциональный тренинг', 'group', '2025-11-30', '14:00:00', '14:45:00', 10),
 
-(4, 6, 'group', '2025-11-11', '09:00:00', '10:00:00', 12),
-(2, 1, 'individual', '2025-11-11', '11:00:00', '12:00:00', 1),
-(3, 3, 'group', '2025-11-11', '15:00:00', '16:00:00', 15),
-(4, 5, 'individual', '2025-11-11', '17:00:00', '17:50:00', 1),
-(2, 2, 'group', '2025-11-11', '19:00:00', '19:45:00', 8),
+(2, 1, 'Силовая тренировка', 'individual', '2025-12-01', '08:00:00', '09:00:00', 1),
+(3, 3, 'Йога для начинающих', 'group', '2025-12-01', '10:00:00', '11:00:00', 15),
+(4, 5, 'Кардио-интервалы', 'group', '2025-12-01', '12:00:00', '12:50:00', 12),
+(2, 2, 'Функциональный тренинг', 'group', '2025-12-01', '16:00:00', '16:45:00', 10),
 
-(3, 4, 'individual', '2025-11-12', '10:00:00', '11:15:00', 1),
-(4, 6, 'group', '2025-11-12', '12:00:00', '13:00:00', 12),
-(2, 1, 'individual', '2025-11-12', '14:00:00', '15:00:00', 1),
-(3, 3, 'group', '2025-11-12', '16:00:00', '17:00:00', 15),
-(4, 5, 'individual', '2025-11-12', '18:00:00', '18:50:00', 1),
+(4, 6, 'Кроссфит', 'group', '2025-12-02', '09:00:00', '10:00:00', 15),
+(2, 1, 'Силовая тренировка', 'individual', '2025-12-02', '11:00:00', '12:00:00', 1),
+(3, 4, 'Продвинутая йога', 'individual', '2025-12-02', '13:00:00', '14:15:00', 1),
+(4, 5, 'Кардио-интервалы', 'group', '2025-12-02', '15:00:00', '15:50:00', 12),
 
-(2, 2, 'group', '2025-11-13', '09:00:00', '09:45:00', 8),
-(3, 4, 'individual', '2025-11-13', '11:00:00', '12:15:00', 1),
-(4, 6, 'group', '2025-11-13', '13:00:00', '14:00:00', 12),
-(2, 1, 'individual', '2025-11-13', '15:00:00', '16:00:00', 1),
-(3, 3, 'group', '2025-11-13', '17:00:00', '18:00:00', 15),
+(2, 1, 'Силовая тренировка', 'individual', '2025-12-03', '09:00:00', '10:00:00', 1),
+(3, 3, 'Йога для начинающих', 'group', '2025-12-03', '10:00:00', '11:00:00', 15),
+(4, 6, 'Кроссфит', 'group', '2025-12-03', '12:00:00', '13:00:00', 15),
+(2, 2, 'Функциональный тренинг', 'group', '2025-12-03', '14:00:00', '14:45:00', 10),
 
-(4, 5, 'individual', '2025-11-14', '10:00:00', '10:50:00', 1),
-(2, 2, 'group', '2025-11-14', '12:00:00', '12:45:00', 8),
-(3, 4, 'individual', '2025-11-14', '14:00:00', '15:15:00', 1),
-(4, 6, 'group', '2025-11-14', '16:00:00', '17:00:00', 12),
-(2, 1, 'individual', '2025-11-14', '18:00:00', '19:00:00', 1),
+(3, 4, 'Продвинутая йога', 'individual', '2025-12-04', '09:00:00', '10:15:00', 1),
+(4, 5, 'Кардио-интервалы', 'group', '2025-12-04', '11:00:00', '11:50:00', 12),
+(2, 1, 'Силовая тренировка', 'individual', '2025-12-04', '13:00:00', '14:00:00', 1),
+(3, 3, 'Вечерняя йога', 'group', '2025-12-04', '15:00:00', '16:00:00', 15),
 
-(3, 3, 'group', '2025-11-15', '09:00:00', '10:00:00', 15),
-(4, 5, 'individual', '2025-11-15', '11:00:00', '11:50:00', 1),
-(2, 2, 'group', '2025-11-15', '13:00:00', '13:45:00', 8),
-(3, 4, 'individual', '2025-11-15', '15:00:00', '16:15:00', 1),
+(4, 6, 'Кроссфит', 'group', '2025-12-05', '09:00:00', '10:00:00', 15),
+(2, 2, 'Функциональный тренинг', 'group', '2025-12-05', '11:00:00', '11:45:00', 10),
+(3, 3, 'Йога для начинающих', 'group', '2025-12-05', '13:00:00', '14:00:00', 15),
+(4, 5, 'Кардио-интервалы', 'group', '2025-12-05', '15:00:00', '15:50:00', 12),
 
-(4, 6, 'group', '2025-11-16', '10:00:00', '11:00:00', 12),
-(2, 1, 'individual', '2025-11-16', '12:00:00', '13:00:00', 1),
-(3, 3, 'group', '2025-11-16', '14:00:00', '15:00:00', 15),
-(4, 5, 'individual', '2025-11-16', '16:00:00', '16:50:00', 1);
+(2, 1, 'Силовая тренировка', 'individual', '2025-12-06', '10:00:00', '11:00:00', 1),
+(3, 4, 'Продвинутая йога', 'individual', '2025-12-06', '11:00:00', '12:15:00', 1),
+(4, 6, 'Кроссфит', 'group', '2025-12-06', '13:00:00', '14:00:00', 15),
+(2, 2, 'Функциональный тренинг', 'group', '2025-12-06', '15:00:00', '15:45:00', 10),
+
+(3, 3, 'Утренняя йога', 'group', '2025-12-07', '09:00:00', '10:00:00', 15),
+(4, 5, 'Кардио-интервалы', 'group', '2025-12-07', '11:00:00', '11:50:00', 12),
+(2, 1, 'Силовая тренировка', 'individual', '2025-12-07', '13:00:00', '14:00:00', 1),
+(3, 4, 'Продвинутая йога', 'individual', '2025-12-07', '15:00:00', '16:15:00', 1);
 
 INSERT INTO subscriptions (user_id, type_id, start_date, end_date, visits_remaining) VALUES
-(5, 1, '2025-11-10', '2025-12-10', NULL),
-(6, 9, '2025-11-10', '2026-11-10', 4);
+(5, 1, '2025-11-25', '2025-12-25', NULL),
+(6, 9, '2025-11-20', '2026-11-20', 4),
+(7, 3, '2025-11-15', '2026-05-15', NULL),
+(8, 5, '2025-11-28', '2025-12-28', NULL),
+(9, 10, '2025-11-10', '2026-11-10', 8),
+(10, 1, '2025-11-30', '2025-12-30', NULL),
+(11, 6, '2025-11-20', '2026-02-20', NULL),
+(12, 15, '2025-11-25', '2026-11-25', 12),
+(13, 2, '2025-11-18', '2026-02-18', NULL),
+(14, 8, '2025-11-22', '2026-11-22', NULL),
+(15, 11, '2025-11-28', '2026-11-28', 4),
+(16, 1, '2025-11-30', '2025-12-30', NULL),
+(17, 4, '2025-11-15', '2026-05-15', NULL),
+(18, 7, '2025-11-20', '2026-05-20', NULL),
+(19, 12, '2025-11-25', '2026-11-25', 8);
 
 INSERT INTO bookings (user_id, schedule_id, with_trainer, status) VALUES
 (5, 1, TRUE, 'booked'),
-(6, 6, FALSE, 'booked');
+(6, 2, FALSE, 'booked'),
+(7, 3, FALSE, 'booked'),
+(8, 4, FALSE, 'booked'),
+
+(9, 5, TRUE, 'booked'),
+(10, 6, FALSE, 'booked'),
+(11, 7, FALSE, 'booked'),
+(12, 8, FALSE, 'booked'),
+
+(13, 9, FALSE, 'booked'),
+(14, 10, TRUE, 'booked'),
+(15, 11, TRUE, 'booked'),
+(16, 12, FALSE, 'booked'),
+
+(17, 13, TRUE, 'booked'),
+(18, 14, FALSE, 'booked'),
+(19, 15, FALSE, 'booked'),
+(5, 16, FALSE, 'booked'),
+
+(6, 17, TRUE, 'booked'),
+(7, 18, FALSE, 'booked'),
+(8, 19, TRUE, 'booked'),
+(9, 20, FALSE, 'booked'),
+
+(10, 21, FALSE, 'booked'),
+(11, 22, FALSE, 'booked'),
+(12, 23, FALSE, 'booked'),
+(13, 24, FALSE, 'booked'),
+
+(14, 25, TRUE, 'booked'),
+(15, 26, TRUE, 'booked'),
+(16, 27, FALSE, 'booked'),
+(17, 28, FALSE, 'booked'),
+
+(18, 29, FALSE, 'booked'),
+(19, 30, FALSE, 'booked'),
+(5, 31, TRUE, 'booked'),
+(6, 32, TRUE, 'booked');
 
 CREATE INDEX idx_users_email ON users(email);
 CREATE INDEX idx_users_role ON users(role);
